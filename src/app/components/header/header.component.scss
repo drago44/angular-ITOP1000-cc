@@ -1,0 +1,65 @@
+@import "../../../styles";
+
+.header {
+  @include adaptiveValue("padding-top", 30, 15);
+  @include adaptiveValue("padding-bottom", 30, 15);
+  backdrop-filter: blur(rem(10));
+  background-color: rgb(255, 255, 255, 0.3);
+
+  &__container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__logo {
+    @include adaptiveValue("font-size", 30, 20);
+    font-weight: 700;
+
+    span {
+      color: $accentColor;
+    }
+
+    @media (max-width: $mobileSmall) {
+      color: transparent;
+      width: 0;
+      height: 0;
+
+      &::before {
+        content: "CC";
+        position: absolute;
+        top: 0;
+        left: rem(15);
+        width: 20%;
+        height: 100%;
+        font-weight: 700;
+        font-size: rem(40);
+        color: $accentColor;
+      }
+
+      span {
+        color: transparent;
+      }
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: rem(10);
+  }
+
+  &__item {
+    .padding-rl-2 {
+      display: inline-block;
+      padding-left: rem(2);
+      padding-right: rem(2);
+    }
+
+    span {
+      font-weight: 700;
+    }
+  }
+}
