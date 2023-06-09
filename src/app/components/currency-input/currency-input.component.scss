@@ -1,0 +1,11 @@
+@import "../../../styles";
+
+.converter__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: rem(15);
+  @media (max-width: $mobileSmall) {
+    flex-direction: column;
+  }
+}

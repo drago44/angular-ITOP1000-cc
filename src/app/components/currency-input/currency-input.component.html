@@ -1,0 +1,21 @@
+<div class="converter__field">
+  <span class="currency-flag currency-flag-{{ code.toLowerCase() }}"></span>
+  <input
+    type="number"
+    placeholder="Amount"
+    [(ngModel)]="value"
+    (change)="onChange()"
+    min="0"
+  />
+  <select [(ngModel)]="code" (change)="onChange()">
+    <option *ngFor="let currency of currencies" [value]="currency.name">
+      <div
+        class="currency-flag currency-flag-{{ currency.name.toLowerCase() }}"
+      ></div>
+      <div class="currency-name">
+        {{ currency.name
+        }}{{ currency.full_name ? " - " + currency.full_name : "" }}
+      </div>
+    </option>
+  </select>
+</div>

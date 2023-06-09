@@ -1,7 +1,11 @@
-<app-header [usdValue]="currRateUSD" [eurValue]="currRateEUR"></app-header>
+<app-header
+  [usdValue]="currRateUSD"
+  [eurValue]="currRateEUR"
+></app-header>
 
 <main>
   <app-converter
+    [getCurrencyRate]="getCurrencyRate"
     [currencies]="currencies"
     [lastUpdate]="lastUpdate"
   ></app-converter>

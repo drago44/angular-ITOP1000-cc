@@ -13,6 +13,7 @@ interface Currency {
   styleUrls: ['./converter.component.scss'],
 })
 export class AppConverter {
+  @Input() getCurrencyRate;
   @Input() currencies: Currency[];
   @Input() lastUpdate: string;
 
@@ -26,10 +27,6 @@ export class AppConverter {
     this.convert('input');
   }
 
-  getCurrencyRate(code: string): number | undefined {
-    return this.currencies.find((currency) => currency.name === code)?.rate;
-  }
-
   calculateValue({
     value,
     sourceRate,
@@ -41,6 +38,7 @@ export class AppConverter {
   }): number {
     return Number(((value * sourceRate) / targetRate).toFixed(2));
   }
+  
 
   convert(source: 'input' | 'output'): void {
     const inCurrRate = this.getCurrencyRate(this.inCode);

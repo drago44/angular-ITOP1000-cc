@@ -21,24 +21,29 @@ export class AppComponent {
 
   constructor(private currencyService: CurrencyService) {}
 
-  getCurrRate(currency: string): string {
-    const currencyObj = this.currencies.find((curr) => curr.name === currency);
-
-    if (currencyObj) {
-      const rate = 1 / currencyObj.rate;
-      return rate.toFixed(2);
-    }
-
-    return '0.00';
+  getCurrencyRate(code: string): number | undefined {
+    return this.currencies.find((currency) => currency.name === code)?.rate;
   }
 
-  dataCurrency() {
+  calculateReverseRate(currency: string): string {
+    const rate = this.getCurrencyRate(currency);
+  
+    if (rate !== undefined) {
+      const reverseRate = 1 / rate;
+      return reverseRate.toFixed(2);
+    }
+  
+    return '0.00';
+  }
+  
+
+  private dataCurrency() {
     this.currencyService.getCurrencies().then((data) => {
       this.currencies = data.currencies;
       this.lastUpdate = data.lastUpdate;
 
-      this.currRateUSD = this.getCurrRate('USD');
-      this.currRateEUR = this.getCurrRate('EUR');
+      this.currRateUSD = this.calculateReverseRate('USD');
+      this.currRateEUR = this.calculateReverseRate('EUR');
     });
   }
 

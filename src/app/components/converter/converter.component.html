@@ -1,39 +1,17 @@
+<!-- ConverterComponent -->
 <section class="converter">
   <div class="converter__container">
     <div class="converter__inner">
       <h1 class="title">Type and click anywhere.</h1>
       <h2>We will take care of everything else.</h2>
       <div class="converter__card">
-        <div class="converter__field">
-          <span
-            class="currency-flag currency-flag-{{ inCode.toLowerCase() }}"
-          ></span>
-          <input
-            type="number"
-            id="inputValue"
-            placeholder="Amount"
-            [(ngModel)]="inputValue"
-            (change)="convert('input')"
-            min="0"
-          />
-          <select
-            id="inputCurr"
-            [(ngModel)]="inCode"
-            (change)="convert('input')"
-          >
-            <option *ngFor="let currency of currencies" [value]="currency.name">
-              <div
-                class="currency-flag currency-flag-{{
-                  currency.name.toLowerCase()
-                }}"
-              ></div>
-              <div class="currency-name">
-                {{ currency.name
-                }}{{ currency.full_name ? " - " + currency.full_name : "" }}
-              </div>
-            </option>
-          </select>
-        </div>
+        <app-currency-input
+          [currencies]="currencies"
+          [(value)]="inputValue"
+          [(code)]="inCode"
+          (change)="convert('input')"
+        ></app-currency-input>
+
         <button (click)="toggleCurrencies()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -50,35 +28,13 @@
             />
           </svg>
         </button>
-        <div class="converter__field">
-          <span
-            class="currency-flag currency-flag-{{ outCode.toLowerCase() }}"
-          ></span>
-          <input
-            type="number"
-            id="outputValue"
-            placeholder="Amount"
-            [(ngModel)]="outputValue"
-            (change)="convert('output')"
-            min="0"
-          />
-          <select
-            id="outputCurr"
-            [(ngModel)]="outCode"
-            (change)="convert('output')"
-          >
-            <option *ngFor="let currency of currencies" [value]="currency.name">
-              <div
-                class="currency-name currency-flag currency-flag-{{
-                  currency.name.toLowerCase()
-                }}"
-              >
-                {{ currency.name
-                }}{{ currency.full_name ? " - " + currency.full_name : "" }}
-              </div>
-            </option>
-          </select>
-        </div>
+
+        <app-currency-input
+          [currencies]="currencies"
+          [(value)]="outputValue"
+          [(code)]="outCode"
+          (change)="convert('output')"
+        ></app-currency-input>
       </div>
       Last updated: {{ lastUpdate }}
     </div>
