@@ -14,34 +14,52 @@ interface Currency {
 })
 export class AppConverter {
   @Input() currencies: Currency[];
-  @Input() lastUpdate;
+  @Input() lastUpdate: string;
 
   inCode: string = 'UAH';
   outCode: string = 'USD';
   inputValue: number;
   outputValue: number;
 
-  toggleCurrencies() {
+  toggleCurrencies(): void {
     [this.inCode, this.outCode] = [this.outCode, this.inCode];
     this.convert('input');
   }
 
-  convert(source: string) {
-    const inCurrRate = this.currencies.find(
-      (currency) => currency.name === this.inCode
-    )?.rate;
-    const outCurrRate = this.currencies.find(
-      (currency) => currency.name === this.outCode
-    )?.rate;
+  getCurrencyRate(code: string): number | undefined {
+    return this.currencies.find((currency) => currency.name === code)?.rate;
+  }
 
-    if (source === 'input' && inCurrRate && outCurrRate) {
-      this.outputValue = Number(
-        ((this.inputValue * outCurrRate) / inCurrRate).toFixed(2)
-      );
-    } else if (source === 'output' && inCurrRate && outCurrRate) {
-      this.inputValue = Number(
-        ((this.outputValue * inCurrRate) / outCurrRate).toFixed(2)
-      );
+  calculateValue({
+    value,
+    sourceRate,
+    targetRate,
+  }: {
+    value: number;
+    sourceRate: number;
+    targetRate: number;
+  }): number {
+    return Number(((value * sourceRate) / targetRate).toFixed(2));
+  }
+
+  convert(source: 'input' | 'output'): void {
+    const inCurrRate = this.getCurrencyRate(this.inCode);
+    const outCurrRate = this.getCurrencyRate(this.outCode);
+
+    if (inCurrRate && outCurrRate) {
+      if (source === 'input') {
+        this.outputValue = this.calculateValue({
+          value: this.inputValue,
+          sourceRate: outCurrRate,
+          targetRate: inCurrRate,
+        });
+      } else if (source === 'output') {
+        this.inputValue = this.calculateValue({
+          value: this.outputValue,
+          sourceRate: inCurrRate,
+          targetRate: outCurrRate,
+        });
+      }
     }
   }
 }
