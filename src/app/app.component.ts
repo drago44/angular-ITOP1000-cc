@@ -35,8 +35,6 @@ export class AppComponent {
       this.currencies = data.currencies;
       this.lastUpdate = data.lastUpdate;
 
-      console.log(this.currencies)
-
       this.currRateUSD = this.calculateReverseRate('USD');
       this.currRateEUR = this.calculateReverseRate('EUR');
     });
