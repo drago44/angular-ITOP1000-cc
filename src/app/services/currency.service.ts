@@ -1,11 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
-interface Currency {
-  rate: number;
-  full_name: string;
-  name: string;
-  symbol: string;
-}
+import { firstValueFrom } from 'rxjs';
+import {
+  Currency,
+  CurrencyRatesData,
+  CurrencyData,
+} from '../shared/interfaces';
 
 @Injectable({
   providedIn: 'root',
@@ -14,67 +14,87 @@ export class CurrencyService {
   private currencies: Currency[] = [];
   private lastUpdate: string = '';
 
+  constructor(private http: HttpClient) {}
+
   async getCurrencies(): Promise<{
     currencies: Currency[];
     lastUpdate: string;
   }> {
     if (this.currencies.length === 0) {
-      const currencyRatesData = await this.fetchCurrencyRates();
-      for (const key in currencyRatesData.rates) {
+      await this.updateCurrencyRates();
+      await this.updateCurrencyData();
+    }
+
+    return {
+      currencies: this.currencies,
+      lastUpdate: this.lastUpdate,
+    };
+  }
+
+  private async updateCurrencyRates(): Promise<void> {
+    const currencyRatesData = await this.fetchCurrencyRates();
+
+    if (currencyRatesData?.rates) {
+      for (const key of Object.keys(currencyRatesData.rates)) {
         const value = currencyRatesData.rates[key];
         const currency: Currency = {
           rate: value,
           full_name: '',
-          name: key,
+          code: key,
           symbol: '',
         };
         this.currencies.push(currency);
       }
+    }
 
-      const currencyData = await this.fetchCurrencyData();
+    this.lastUpdate = currencyRatesData?.time_last_update_utc
+      ? new Date(currencyRatesData.time_last_update_utc).toLocaleString() +
+        ' UTC'
+      : '';
+  }
 
-      currencyData.forEach((currency) => {
-        const name = Object.keys(currency.currencies)[0];
-        const index = this.currencies.findIndex(
-          (element) => element.name === name
-        );
-        if (index !== -1) {
-          this.currencies[index] = {
-            ...this.currencies[index],
-            full_name: currency.currencies[name].name,
-            symbol: currency.currencies[name].symbol,
-          };
+  private async updateCurrencyData(): Promise<void> {
+    const currencyData = await this.fetchCurrencyData();
+
+    if (Array.isArray(currencyData)) {
+      currencyData.forEach((currency: CurrencyData) => {
+        const [name] = Object.keys(currency.currencies);
+        if (name) {
+          const targetCurrency = this.currencies.find(
+            (element) => element.code === name
+          );
+          if (targetCurrency) {
+            targetCurrency.full_name = currency.currencies[name].name;
+            targetCurrency.symbol = currency.currencies[name].symbol;
+          }
         }
-      });
-
-      this.lastUpdate =
-        new Date(currencyRatesData.time_last_update_utc).toLocaleString() +
-        ' UTC';
-
-      return { currencies: this.currencies, lastUpdate: this.lastUpdate };
-    } else {
-      return Promise.resolve({
-        currencies: this.currencies,
-        lastUpdate: this.lastUpdate,
       });
     }
   }
 
-  private fetchCurrencyRates() {
-    return fetch('https://open.er-api.com/v6/latest/UAH')
-      .then((response) => response.json())
-      .catch((error) => {
-        console.error('Error fetching currency rates:', error);
-        throw error;
-      });
+  private async fetchCurrencyRates(): Promise<CurrencyRatesData> {
+    try {
+      return await firstValueFrom(
+        this.http.get<CurrencyRatesData>(
+          'https://open.er-api.com/v6/latest/UAH'
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching currency rates:', error);
+      throw error;
+    }
   }
 
-  private fetchCurrencyData() {
-    return fetch('https://restcountries.com/v3.1/all?fields=currencies')
-      .then((response) => response.json())
-      .catch((error) => {
-        console.error('Error fetching currency data:', error);
-        throw error;
-      });
+  private async fetchCurrencyData(): Promise<CurrencyData[]> {
+    try {
+      return await firstValueFrom(
+        this.http.get<CurrencyData[]>(
+          'https://restcountries.com/v3.1/all?fields=currencies'
+        )
+      );
+    } catch (error) {
+      console.error('Error fetching currency data:', error);
+      throw error;
+    }
   }
 }

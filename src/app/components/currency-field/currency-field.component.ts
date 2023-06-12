@@ -1,18 +1,12 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-
-interface Currency {
-  rate: number;
-  full_name: string;
-  name: string;
-  symbol: string;
-}
+import { Currency } from 'src/app/shared/interfaces';
 
 @Component({
-  selector: 'app-currency-input',
-  templateUrl: './currency-input.component.html',
-  styleUrls: ['./currency-input.component.scss'],
+  selector: 'app-currency-field',
+  templateUrl: './currency-field.component.html',
+  styleUrls: ['./currency-field.component.scss'],
 })
-export class AppCurrencyInput {
+export class AppCurrencyField {
   @Input() currencies: Currency[];
   @Input() value: number;
   @Input() code: string;

@@ -8,12 +8,9 @@
     min="0"
   />
   <select [(ngModel)]="code" (change)="onChange()">
-    <option *ngFor="let currency of currencies" [value]="currency.name">
-      <div
-        class="currency-flag currency-flag-{{ currency.name.toLowerCase() }}"
-      ></div>
+    <option *ngFor="let currency of currencies" [value]="currency.code">
       <div class="currency-name">
-        {{ currency.name
+        {{ currency.code
         }}{{ currency.full_name ? " - " + currency.full_name : "" }}
       </div>
     </option>

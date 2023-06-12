@@ -1,11 +1,5 @@
 import { Component, Input } from '@angular/core';
-
-interface Currency {
-  rate: number;
-  full_name: string;
-  name: string;
-  symbol: string;
-}
+import { Currency } from 'src/app/shared/interfaces';
 
 @Component({
   selector: 'app-converter',
