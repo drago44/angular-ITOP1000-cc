@@ -19,6 +19,10 @@ export class AppConverter {
     outputSelect: new FormControl('USD'),
   });
 
+  public formGetValue(value: string) {
+    return this.form.get(value);
+  }
+
   public calculateValue({
     value,
     sourceRate,
@@ -32,26 +36,26 @@ export class AppConverter {
   }
 
   public toggleCurrencies(): void {
-    const inputCode = this.form.get('inputSelect')?.value || 'USD';
-    const outputCode = this.form.get('outputSelect')?.value || 'UAH';
+    const inputCode = this.formGetValue('inputSelect')?.value || 'USD';
+    const outputCode = this.formGetValue('outputSelect')?.value || 'UAH';
 
-    this.form.get('inputSelect')?.setValue(outputCode);
-    this.form.get('outputSelect')?.setValue(inputCode);
+    this.formGetValue('inputSelect')?.setValue(outputCode);
+    this.formGetValue('outputSelect')?.setValue(inputCode);
 
     this.convert('input');
   }
 
   public convert(source: 'input' | 'output'): void {
     const inCurrRate = this.getCurrencyRate(
-      this.form.get('inputSelect')?.value
+      this.formGetValue('inputSelect')?.value
     );
     const outCurrRate = this.getCurrencyRate(
-      this.form.get('outputSelect')?.value
+      this.formGetValue('outputSelect')?.value
     );
 
     if (inCurrRate && outCurrRate) {
-      const inputValue = this.form.get('input')?.value || 0;
-      const outputValue = this.form.get('output')?.value || 0;
+      const inputValue = this.formGetValue('input')?.value || 0;
+      const outputValue = this.formGetValue('output')?.value || 0;
 
       if (source === 'input') {
         const convertedValue = this.calculateValue({
@@ -60,7 +64,7 @@ export class AppConverter {
           targetRate: inCurrRate,
         });
 
-        this.form.get('output')?.setValue(convertedValue);
+        this.formGetValue('output')?.setValue(convertedValue);
       } else if (source === 'output') {
         const convertedValue = this.calculateValue({
           value: outputValue,
@@ -68,7 +72,7 @@ export class AppConverter {
           targetRate: outCurrRate,
         });
 
-        this.form.get('input')?.setValue(convertedValue);
+        this.formGetValue('input')?.setValue(convertedValue);
       }
     }
   }
