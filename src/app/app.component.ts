@@ -8,18 +8,18 @@ import { Currency } from './shared/interfaces';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  currencies: Currency[] = [];
-  currRateUSD: string;
-  currRateEUR: string;
-  lastUpdate: string;
+  public currencies: Currency[] = [];
+  public currRateUSD: string;
+  public currRateEUR: string;
+  public lastUpdate: string;
 
   constructor(private currencyService: CurrencyService) {}
 
-  getCurrencyRate(code: string): number | undefined {
+  public getCurrencyRate(code: string): number | undefined {
     return this.currencies.find((currency) => currency.code === code)?.rate;
   }
 
-  calculateReverseRate(currency: string): string {
+  public calculateReverseRate(currency: string): string {
     const rate = this.getCurrencyRate(currency);
 
     if (rate !== undefined) {
@@ -31,7 +31,7 @@ export class AppComponent {
   }
 
   private dataCurrency() {
-    this.currencyService.getCurrencies().then((data) => {
+    this.currencyService.getCurrencies().subscribe((data) => {
       this.currencies = data.currencies;
       this.lastUpdate = data.lastUpdate;
 

@@ -4,14 +4,23 @@
     <div class="converter__inner">
       <h1 class="title">Type and click anywhere.</h1>
       <h2>We will take care of everything else.</h2>
-      <div class="converter__card">
-        <app-currency-field
-          [currencies]="currencies"
-          [(value)]="inputValue"
-          [(code)]="inCode"
-          (change)="convert('input')"
-        ></app-currency-field>
-
+      <form [formGroup]="form" class="converter__form">
+        <div class="converter__field">
+          <span
+            class="currency-flag currency-flag-{{
+              form.get('inputSelect')?.value?.toLowerCase()
+            }}"
+          ></span>
+          <app-input
+            formControlName="input"
+            (change)="convert('input')"
+          ></app-input>
+          <app-select
+            (change)="convert('input')"
+            [currencies]="currencies"
+            formControlName="inputSelect"
+          ></app-select>
+        </div>
         <button (click)="toggleCurrencies()">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -28,14 +37,23 @@
             />
           </svg>
         </button>
-
-        <app-currency-field
-          [currencies]="currencies"
-          [(value)]="outputValue"
-          [(code)]="outCode"
-          (change)="convert('output')"
-        ></app-currency-field>
-      </div>
+        <div class="converter__field">
+          <span
+            class="currency-flag currency-flag-{{
+              form.get('outputSelect')?.value?.toLowerCase()
+            }}"
+          ></span>
+          <app-input
+            formControlName="output"
+            (change)="convert('output')"
+          ></app-input>
+          <app-select
+            (change)="convert('output')"
+            [currencies]="currencies"
+            formControlName="outputSelect"
+          ></app-select>
+        </div>
+      </form>
       Last updated: {{ lastUpdate }}
     </div>
   </div>

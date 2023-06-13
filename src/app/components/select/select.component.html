@@ -1,0 +1,8 @@
+<select [formControl]="currency">
+  <option *ngFor="let currency of currencies" [value]="currency.code">
+    <div class="currency-name">
+      {{ currency.code
+      }}{{ currency.full_name ? " - " + currency.full_name : "" }}
+    </div>
+  </option>
+</select>
