@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Currency } from 'src/app/shared/interfaces';
 
@@ -7,17 +7,21 @@ import { Currency } from 'src/app/shared/interfaces';
   templateUrl: './converter.component.html',
   styleUrls: ['./converter.component.scss'],
 })
-export class AppConverter {
+export class AppConverter  implements OnChanges{
   @Input() getCurrencyRate;
   @Input() currencies: Currency[];
   @Input() lastUpdate: string;
 
   form = new FormGroup({
-    input: new FormControl(),
+    input: new FormControl(100),
     output: new FormControl(),
     inputSelect: new FormControl('UAH'),
     outputSelect: new FormControl('USD'),
   });
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.convert('input');
+  }
 
   public formGetValue(value: string) {
     return this.form.get(value);
